@@ -3,8 +3,7 @@
 
 # scape ted.com with all of its talks.
 
-import requests
-from pattern import web
+import fetch
 
 
 f = open( 'ted.txt', 'w' )
@@ -13,8 +12,8 @@ url = 'http://www.ted.com/talks/browse'
 for number in range(1,51):
     params = {'page': number}
     print number
-    webpage = requests.get(url, params=params)
-    dom = web.Element( webpage.text )
+    #webpage = requests.get(url, params=params)
+    dom = fetch.dom( url, params=params  )
     table = dom.by_tag( 'div.row row-sm-4up row-lg-6up row-skinny' )[0]
     for talk in table.by_tag('div.col'):
         speaker = talk.by_tag( 'h4.h12 talk-link__speaker' )[0].content.replace('\n', '').encode('ascii', 'ignore')

@@ -2,23 +2,6 @@
 #   Name: Salil Agarwal
 
 import pandas as pd
-
-"""def schoLR( X=pd.DataFrame(), Y=pd.Series(), theta=pd.Series(1.0, index=[0,1]), rate=0.3 ):
-    #Checking sizes of theta and X.columns
-    if theta.size + 1 != X.columns.size:
-        theta = pd.Series(1.0, index=range(X.columns.size + 1)
-    
-    for i in range(X.index.size):
-        h_theta = thetaTX( X.loc[i], theta ) 
-        for j in range(theta.index.size):
-            theta[j] = theta[j] + rate * ( Y[i] - h_theta) ) * X[j][i]
-    return theta   
-
-def thetaTX( X=pd.Series(), theta=pd.Series() ):
-    sum = 0.0
-    for i in range(X.size):
-        sum = sum + X[i]*theta[i]
-    return sum"""
     
     
 def costFnLeastSq( x, y, wgts ):

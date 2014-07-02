@@ -34,7 +34,7 @@ def batchGradDes( x, y, rate=0.3 ):
     diff = 1.0
     cost = costFnLeastSq( x, y, wgts )
     counter = 1
-    while diff > 0.001 :
+    while diff > 0.0 :
         counter += 1
         wgts = updateWeights( x, y, wgts, rate )
         newcost = costFnLeastSq( x, y, wgts )
@@ -47,5 +47,30 @@ def batchGradDes( x, y, rate=0.3 ):
     return wgts
 
 
+def stocGradDes( x, y, rate=0.3, delta=0.1 ):
+    wgts = pd.Series( 1.0, x.columns )
+    change = 1.0
+    cost = costFnLeastSq( x, y, wgts )
+    counter = 1
+    while change > delta :
+        counter += 1
+        p = x.dot( wgts )
+        diff = y[0] - p
+        for i in x.index:
+            wgts = wgts + rate * diff[i] * x.loc[i]
+
+        newcost = costFnLeastSq( x, y, wgts )
+        change = cost - newcost
+        cost = newcost
+        if delta < 0.1:             #To make algorithm converge.
+            rate = rate - rate * 0.2
+
+    print "Parameters: \n "
+    print wgts
+    print "\nTotal iterations: %d" % counter
+    print "\nFinal Value of cost function: %f" % cost
+    return wgts
+    
+    
     
     

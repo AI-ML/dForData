@@ -1,9 +1,10 @@
 #   Author: Salil Agarwal
-#   Date: 1/07/2014
+#   Date:   1/07/2014
 
 
-import pandas as pd
-    
+from pandas import Series, DataFrame
+from numpy.linalg import inv  
+
     
 def costFnLeastSq( x, y, wgts ):
     """ Implemented the cost function associated with ordinary least square regression
@@ -30,7 +31,7 @@ def updateWeights( x, y, wgts, rate=0.3 ):
     return wgts
 
 def batchGradDes( x, y, rate=0.3 ):
-    wgts = pd.Series( 1.0, x.columns )
+    wgts = Series( 1.0, x.columns )
     diff = 1.0
     cost = costFnLeastSq( x, y, wgts )
     counter = 1
@@ -72,5 +73,15 @@ def stocGradDes( x, y, rate=0.3, delta=0.1 ):
     return wgts
     
     
+def normalEquation( x, y ):
+    """ Calculate weights for linear regression directly using Normal Equation
+        method"""
+    xTx = x.T.dot(x)
+    matrix_form = xTx.as_matrix()
+    inverse = inv( matrix_form )
+    #back to dataframe 
+    inverse = DataFrame( inverse )
+    weights = inverse.dot(x.T).dot(y)
+    return weights[0]    
     
     

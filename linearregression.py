@@ -1,4 +1,4 @@
-#   Author: Salil Agarwal
+#   Author: Salil Agarwal (salil@dfordata.com)
 #   Date:   1/07/2014
 
 
@@ -11,10 +11,9 @@ def costFnLeastSq( x, y, wgts ):
         model """
     p = x.dot( wgts ) #p := pridicted value for y type(p):=pandas.core.series.Series
     diff = p - y[0]   # type(diff) = pandas.core.series.Series; type(y) = DataFrame
-    diffsq = pow( diff, 2 )
-    summ = diffsq.sum()
-    error = summ / ( 2.0 * x.index.size )
-    return error
+    summ = diff.T.dot(diff)
+    cost = summ / ( 2.0 * x.index.size )
+    return cost
     
 def updateWeights( x, y, wgts, rate=0.3 ):
     """Implemention of one iteration of Batch Gradient Descent. 
@@ -84,4 +83,33 @@ def normalEquation( x, y ):
     weights = inverse.dot(x.T).dot(y)
     return weights[0]    
     
+class LinearRegression():
+    def __init__(self, fit_intercept=True, normalize=True):
+        self.fit_intercept = fit_intercept
+        self.normalize = normalize
+    
+    def fit_SGD(self, x, y, rate=0.3, delta=0.1 ):
+        self.coef = stocGradDes(x, y, rate, delta)
+        
+    def fit_BGD(self, x, y, rate=0.3):
+        self.coef = batchGradDes(x, y, rate)
+        
+    def fit_normalEq(self, x, y):
+        self.coef = normalEquation(x, y)
+        
+    def predict(self, x):
+        return x.dot( coef_ )
+    
+    def error(x, y)       
+        pre_y = self.predict( x )
+        diff = y - pre_y
+        errorval = pow(diff, 2).sum()/y.size 
+        return errorval
+        
+    def cost_fn_value(x,y,wgts=self.coef):
+        return costFnLeastSq(x,y,wgts)
+         
+        
+    
+        
     

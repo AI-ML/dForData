@@ -10,7 +10,7 @@ def costFnLeastSq( x, y, wgts ):
     """ Implemented the cost function associated with ordinary least square regression
         model """
     p = x.dot( wgts ) #p := pridicted value for y type(p):=pandas.core.series.Series
-    diff = p - y[0]   # type(diff) = pandas.core.series.Series; type(y) = DataFrame
+    diff = p - y  # type(diff) = pandas.core.series.Series; type(y) = Series
     summ = diff.T.dot(diff)
     cost = summ / ( 2.0 * x.index.size )
     return cost
@@ -23,7 +23,7 @@ def updateWeights( x, y, wgts, rate=0.3 ):
        of VECTORS """
        
     p = x.dot( wgts )
-    diff = y[0] - p
+    diff = y - p
     summ = x.T.dot( diff ) # This step is awesome and shows the power of pandas.
     val = summ * rate
     wgts = wgts + val
@@ -48,14 +48,14 @@ def batchGradDes( x, y, rate=0.3 ):
 
 
 def stocGradDes( x, y, rate=0.3, delta=0.1 ):
-    wgts = pd.Series( 1.0, x.columns )
+    wgts = Series( 1.0, x.columns )
     change = 1.0
     cost = costFnLeastSq( x, y, wgts )
     counter = 1
     while change > delta :
         counter += 1
         p = x.dot( wgts )
-        diff = y[0] - p
+        diff = y - p
         for i in x.index:
             wgts = wgts + rate * diff[i] * x.loc[i]
 
@@ -81,13 +81,27 @@ def normalEquation( x, y ):
     #back to dataframe 
     inverse = DataFrame( inverse )
     weights = inverse.dot(x.T).dot(y)
-    return weights[0]    
+    return weights
     
-class LinearRegression():
+  
+class LinearModel():
     def __init__(self, fit_intercept=True, normalize=True):
         self.fit_intercept = fit_intercept
         self.normalize = normalize
     
+    """ 
+    @abstractmethod
+    def predict(self, x):
+    
+    @abstractmethod
+    def error(x, y):
+    
+    @abstractmethod
+    def cost_fn_value(x,y,wgts):
+"""
+    
+class LinearRegression(LinearModel):
+        
     def fit_SGD(self, x, y, rate=0.3, delta=0.1 ):
         self.coef = stocGradDes(x, y, rate, delta)
         
@@ -98,15 +112,17 @@ class LinearRegression():
         self.coef = normalEquation(x, y)
         
     def predict(self, x):
-        return x.dot( coef_ )
+        return x.dot( self.coef )
     
-    def error(x, y)       
+    def error(self, x, y):    
         pre_y = self.predict( x )
         diff = y - pre_y
-        errorval = pow(diff, 2).sum()/y.size 
+        errorval = pow(diff, 2).sum()/y.size
         return errorval
         
-    def cost_fn_value(x,y,wgts=self.coef):
+    def cost_fn_value(self, x, y, wgts=None):
+        if wgts is None:
+            wgts = self.coef
         return costFnLeastSq(x,y,wgts)
          
         

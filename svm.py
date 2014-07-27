@@ -13,29 +13,36 @@ import numpy as np
 
 
 class Alpha():
-    def __init__( self, index=None, val=None ):
-        self.alpha = pd.DataFrame(0.0,index=['val'], columns=[])
+    def __init__( self ):
+        self.alpha = pd.DataFrame(0.0,index=['val','error'], columns=[])
         
-    def add( self, index, val ):
-        self.alpha[index] = val
+    def add( self, index, val, error ):
+        self.alpha[index] = [val, error]
         
     def value( self, i ):
         value = self.alpha.columns[alphas.columns==i]#Searching for a value in columns
                                                      #of alpha
         if value.size == 0:
             return 0
-        return self.alpha[value[0]]
+        return self.alpha[i]['val']
+        
+    def error( self, i ):
+        error = self.alpha.columns[alphas.columns==i]#Searching for a value in columns
+                                                     #of alpha
+        if error.size == 0:
+            return 0
+        return self.alpha[i]['error']
         
     def size( self ):
         return self.alpha.columns.size
         
-    def indexValue( self ):
+    def nonZeros( self ):
         return self.alpha.columns
 
 
 def fx( x, y, alphas, b, sample ):
     total = 0.0
-    for i in alphas.columns:
+    for i in alphas.nonZeros:
         total = total + alphas.value(i) * y[i] * kernal(x[i], sample)
     total = total + b
     return total
@@ -49,6 +56,10 @@ def bounds( y, alphas, i, j, C ):
         H = min( C, alphas.value(i) + alphas.value(j) )
     
     return { 'L':L, 'H':H }
+    
+def selectJ( x, alphas, i ):
+    
+    
     
 def svm( x, y, tol, C, max_passes ):
     alphas = Alpha()

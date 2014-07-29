@@ -114,12 +114,12 @@ class FbPageNode():
         self.id_ = get_node_id( projectname )
         
         
-    def allLinks( self ):
+    def links( self ):
         self.links_ = get_edges( self.id_, 'links', self.project_ )
         return self.links_
     
     
-    def allLikes( self ):
+    def likes( self ):
         path = file_path( self.id_, 'likes', self.project_ )
         if os.path.isfile( path ):
             print 'its reading from file'
@@ -138,8 +138,13 @@ class FbPageNode():
         self.likes_.to_json( path )
         return self.likes_
     
-    
-    def allComments( self ):
+    def uniqueLikes( self ):
+        likes = self.likes()
+        ids = likes['id']
+        self.unique_ = pd.Series( ids.unique() )
+        return self.unique_
+
+    def comments( self ):
         path = file_path( self.id_, 'comments', self.project_ )
         if os.path.isfile( path ):
             self.comments_ = pd.read_json( path )
@@ -158,7 +163,7 @@ class FbPageNode():
         return self.comments_ 
         
         
-    def allUsers( self ):
+    def users( self ):
         path = file_path( self.id_, 'users', self.project_ )
         if os.path.isfile( path ):
             self.users_ = pd.read_json( path )

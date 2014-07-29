@@ -73,12 +73,12 @@ class FbNode():
         self.id_ = nodeid
         
         
-    def allLikes(self):
+    def likes(self):
         self.likes_ = get_edges( self.id_, 'likes', self.project_ )
         return self.likes_
         
         
-    def allComments(self):
+    def comments(self):
         self.comments_ = get_edges( self.id_, 'comments', self.project_ )
         if self.comments_.columns.size == 0:
             return pd.Series()
@@ -93,7 +93,7 @@ class FbNode():
         return self.comments_['from']
        
        
-    def allUsers(self):
+    def users(self):
         path = file_path( self.id_, 'user', self.project_ )
         if os.path.isfile( path ):
             self.users_ = pd.read_json( path )
@@ -131,7 +131,7 @@ class FbPageNode():
         fwrite = open( path, 'a' )
         for ids in linkids:
             linknode = FbNode( ids, self.project_ )
-            linknode.allLikes().to_csv( fwrite, mode='a', sep='\t',\
+            linknode.likes().to_csv( fwrite, mode='a', sep='\t',\
                                         index=False, encoding='utf8' )
         fwrite.close()
         self.likes_ = pd.read_csv( path, sep='\t', encoding='utf8' )
@@ -155,7 +155,7 @@ class FbPageNode():
         messages = []
         for ids in linkids:
             linknode = FbNode( ids, self.project_ )
-            messages.extend(linknode.allComments().tolist())
+            messages.extend(linknode.comments().tolist())
             
         fwrite = open( path, 'w' )
         self.comments_ = pd.DataFrame( messages, columns=['comments'] )
@@ -175,7 +175,7 @@ class FbPageNode():
         fwrite = open( path, 'a' )
         for ids in linkids:
             linknode = FbNode( ids, self.project_ )
-            linknode.allUsers().to_csv( fwrite, mode='a', sep='\t',\
+            linknode.users().to_csv( fwrite, mode='a', sep='\t',\
                                         index=False, encoding='utf8' )
         fwrite.close()
         self.users_ = ( pd.read_csv( path, sep='\t' ,encoding='utf8' ) )

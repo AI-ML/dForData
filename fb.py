@@ -81,7 +81,7 @@ class FbNode():
     def allComments(self):
         self.comments_ = get_edges( self.id_, 'comments', self.project_ )
         if self.comments_.columns.size == 0:
-            return self.comments_
+            return pd.Series()
         return self.comments_['message']
     
     
@@ -152,14 +152,15 @@ class FbPageNode():
             
         self.links_ = get_edges( self.id_, 'links', self.project_ )
         linkids = self.links_['id']
-        fwrite = open( path, 'a' )
+        messages = []
         for ids in linkids:
             linknode = FbNode( ids, self.project_ )
-            linknode.allComments().to_csv( fwrite, mode='a', sep='\t',\
-                                           index=False, encoding='utf8' )
-        fwrite.close()
-        self.comments_ = pd.read_csv( path,sep='\t', encoding='utf8')
+            messages.extend(linknode.allComments().tolist())
+            
+        fwrite = open( path, 'w' )
+        self.comments_ = pd.DataFrame( messages, columns=['comments'] )
         self.comments_.to_json( path )
+        fwrite.close()
         return self.comments_ 
         
         

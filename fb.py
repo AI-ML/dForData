@@ -22,7 +22,11 @@ def file_path( nodeid, edgetype, project ):
     """ Assign the filepath created using nodeid and edgetype to path """
     fname = str(nodeid) + '_' + edgetype + '.json'
     dirsep = os.path.sep
-    path = os.getcwd() + dirsep + 'data' + dirsep + project + dirsep + fname
+    dirpath = os.getcwd() + dirsep + 'data' + dirsep + project
+    if not os.path.isdir( dirpath ):
+        os.makedirs( dirpath)
+        
+    path = dirpath + dirsep + fname
     return path
     
     

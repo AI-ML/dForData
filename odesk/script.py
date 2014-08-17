@@ -37,7 +37,7 @@ try:
 
     print image
     print title
-#   print text
+    
     
 except requests.ConnectionError:
     print 'No Internet. Please check your internet connection'

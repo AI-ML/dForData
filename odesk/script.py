@@ -4,19 +4,20 @@
 try:
     from bs4 import BeautifulSoup
     import requests
+    import xml.etree.ElementTree as ET
 except ImportError:
     print 'You didn\'t have the required packages to run this script'
 
 
 try:
     data = requests.get('http://www.soloboxeo.com/feed/')
-    soup = BeautifulSoup(data.text, 'xml')
-    items = soup.find_all('item')
+    soup = ET.fromstring(data.text.encode('utf8'))
+    items = soup.findall('.//item')
     links = []
     title = []
     for i in items:
-        links.append(i.link.text)
-        title.append(i.title.text)
+        links.append(i.find('link').text)
+        title.append(i.find('title').text)
 
     image = []
     text = []
